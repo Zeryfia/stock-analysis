@@ -13,9 +13,11 @@ def plot_stock_data():
     stock_data['MA50'] = stock_data['Close'].rolling(window=50).mean()
     stock_data['MA200'] = stock_data['Close'].rolling(window=200).mean()
     
-    # Additional Technical Indicators
-    stock_data['RSI'] = calculate_rsi(stock_data['Close'])
-    stock_data['MACD'] = calculate_macd(stock_data['Close'])
+    if show_rsi.get():
+        stock_data['RSI'] = calculate_rsi(stock_data['Close'])
+    
+    if show_macd.get():
+        stock_data['MACD'] = calculate_macd(stock_data['Close'])
 
     plt.figure(figsize=(12, 8))
     plt.title(f'{stock_symbol} Stock Analysis')
@@ -27,11 +29,19 @@ def plot_stock_data():
     plt.ylabel('Price')
     plt.legend()
 
-    plt.subplot(2, 1, 2)
-    plt.plot(stock_data.index, stock_data['RSI'], label='RSI')
-    plt.xlabel('Date')
-    plt.ylabel('RSI')
-    plt.legend()
+    if show_rsi.get():
+        plt.subplot(2, 1, 2)
+        plt.plot(stock_data.index, stock_data['RSI'], label='RSI')
+        plt.xlabel('Date')
+        plt.ylabel('RSI')
+        plt.legend()
+
+    if show_macd.get():
+        plt.subplot(2, 1, 2 if show_rsi.get() else 1)
+        plt.plot(stock_data.index, stock_data['MACD'], label='MACD')
+        plt.xlabel('Date')
+        plt.ylabel('MACD')
+        plt.legend()
 
     plt.tight_layout()
     plt.show()
